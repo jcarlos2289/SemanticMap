@@ -24,12 +24,6 @@ import wordcloud.font.scale.SqrtFontScalar;
 import wordcloud.palette.ColorPalette;
 
 
-
-//import org.jfree.data.category.CategoryDataset;
-//import org.jfree.data.category.DefaultCategoryDataset;
-
-
-
 public class Node {
 	ArrayList<ImageTags> images;
 	ImageTags representative;
@@ -37,14 +31,8 @@ public class Node {
 	ArrayList<Double> sumDistances;
 	HashMap<String, Float> histoMean;
 	HashMap<String, Float> histoVariance;
-	HashMap<String, Float> histoCuadSum;
 	HashMap<String, Float> histoStanDev;
-	HashMap<String, Float> histoMeanDev;
-	HashMap<String, Float> histoSumMeanDev;
 	
-	
-	//HashMap<String,Float> w;
-	//float wSum;
 	String nodeName = "";
 	float nodeVariance;
 	boolean useHisto;
@@ -60,14 +48,11 @@ public class Node {
 			sumDistances = new ArrayList<Double>();
 		} else {
 			histoMean = new HashMap<String, Float>();
-			histoCuadSum = new HashMap<String, Float>();
+			
 			histoVariance = new HashMap<String, Float>();
 			histoStanDev = new HashMap<String, Float>();
-			histoMeanDev = new HashMap<String, Float>();
-			histoSumMeanDev = new HashMap<String, Float>();
-			//w = new HashMap<String,Float>();
 			nodeVariance =0;
-			//wSum=0;
+			
 			
 
 		}
@@ -89,17 +74,10 @@ public class Node {
 			sumDistances = new ArrayList<Double>();
 		} else {
 			histoMean = new HashMap<String, Float>();
-			histoCuadSum = new HashMap<String, Float>();
 			histoVariance = new HashMap<String, Float>();
 			histoStanDev = new HashMap<String, Float>();
-			histoMeanDev = new HashMap<String, Float>();
-			histoSumMeanDev = new HashMap<String, Float>();
-			//w = new HashMap<String,Float>();
 			nodeVariance =0;
-			//wSum=0;
-			
-
-		}
+			}
 		weights = ws;
 	}
 
@@ -188,13 +166,12 @@ public class Node {
 				images.add(img);
 				int n = images.size();
 				double[] xmedian = new double[images.size()], ymedian = new double[images.size()];
-				if (images.size() < 2 * weights.length) { // only when we don't need to use the weights
+				if (images.size() <  Double.MAX_VALUE/*2 * weights.length*/) { // only when we don't need to use weights
 					iterator = img.getKeys().iterator();
 					while (iterator.hasNext()) {
 						elem = iterator.next();
 						if (histoMean.get(elem) != null) { // the tag is present// in the hash
-						    //float ram = histoMean.get(elem);
-							histoMean.put(elem, (histoMean.get(elem) * (n - 1) + img.tags.get(elem)) / n);
+						   	histoMean.put(elem, (histoMean.get(elem) * (n - 1) + img.tags.get(elem)) / n);
 							} else {
 							// The actual tag don't exits in the hash, so we add
 							histoMean.put(elem, img.tags.get(elem) / n);
@@ -205,7 +182,7 @@ public class Node {
 						ymedian[i] = images.get(i).ycoord;
 					}
 					//HashMap g = New HashMap<String, ArrayList<Double>>;
-					// by JC
+					//  JC
 					// --------------------------------------------------------------------
 					// calcular la varianza sin los pesos
 					iterator = images.get(0).getKeys().iterator();
@@ -232,7 +209,8 @@ public class Node {
 
 				} else {// Recalculate the histoMean using all the values, using
 						// the weights
-					float sumWeights =0;
+					System.out.println("Using Weights");
+					/*float sumWeights =0;
 					float auxWeight =0;
 					
 					for (int i = 0; i < weights.length; i++) {
@@ -245,15 +223,7 @@ public class Node {
 					while (iterator.hasNext()) {
 						elem = iterator.next(); // The first element is added  and multiply by the first weight, to reset all the elements in the hash
 						histoMean.put(elem, images.get(0).tags.get(elem) * weights[0] / sumWeights);
-						//histoVariance.put(elem,(float) (Math.pow(images.get(0).tags.get(elem)  - histoMean.get(elem), 2))* weights[0]/ sumWeights);
-						//histoStanDev.put(elem, (float) Math.sqrt(histoVariance.get(elem)));
 						
-						//add the last value
-						/*histoMean.put(elem, histoMean.get(elem) +  images.get(n-1).tags.get(elem) * weights[0] / n);
-						histoVariance.put(elem,(float) (histoVariance.get(elem) + Math.pow(images.get(0).tags.get(elem) * weights[0] - histoMean.get(elem), 2))/ images.size());
-						histoStanDev.put(elem, (float) Math.sqrt(histoVariance.get(elem)));*/
-						
-						//actualizar
 						}
 					ImageTags it;
 					for (int i = 1; i < n; i++) {
@@ -264,16 +234,13 @@ public class Node {
 							if (histoMean.get(elem) != null) { // the tag is present in the hash
 								if (i < weights.length) {
 									histoMean.put(elem, histoMean.get(elem) + (it.tags.get(elem) * weights[i] / sumWeights));
-									//histoVariance.put(elem,(float) (histoVariance.get(elem) + Math.pow(images.get(i).tags.get(elem)  - histoMean.get(elem), 2)* weights[i]/ sumWeights));
-									//histoStanDev.put(elem, (float) Math.sqrt(histoVariance.get(elem)));
+									
 								} else if (i > images.size() - weights.length) {
 									histoMean.put(elem,histoMean.get(elem) + (it.tags.get(elem) * weights[(n - 1) - i] / sumWeights));
-									//histoVariance.put(elem, (float) (histoVariance.get(elem) + Math.pow(images.get(i).tags.get(elem)  - histoMean.get(elem), 2)* weights[(n - 1) - i]/ sumWeights));
-									//histoStanDev.put(elem, (float) Math.sqrt(histoVariance.get(elem)));
+									
 								} else {
 									histoMean.put(elem, histoMean.get(elem) + (it.tags.get(elem) / sumWeights));
-									//histoVariance.put(elem,	(float) (histoVariance.get(elem) + Math.pow(images.get(i).tags.get(elem)  - histoMean.get(elem), 2)/ sumWeights));
-									//histoStanDev.put(elem, (float) Math.sqrt(histoVariance.get(elem)));
+									
 								}
 							} else { // The actual tag don't exits in the hash,so we add
 								// Deberia hacer una comprobacion similar a la
@@ -281,17 +248,14 @@ public class Node {
 								// pesos?-------------------------------------------------
 								if (i < weights.length) {
 									histoMean.put(elem, (it.tags.get(elem) * weights[i] / sumWeights));
-									//histoVariance.put(elem,	(float) (Math.pow(images.get(i).tags.get(elem)  - histoMean.get(elem), 2)* weights[i]/ sumWeights));
-									//histoStanDev.put(elem, (float) Math.sqrt(histoVariance.get(elem)));
+									
 								} else if (i > images.size() - weights.length) {
 									histoMean.put(elem, (it.tags.get(elem) * weights[(n - 1) - i] / sumWeights));
-									//histoVariance.put(elem, (float) (Math.pow(images.get(i).tags.get(elem)  - histoMean.get(elem),2) * weights[(n - 1) - i]/ sumWeights));
-									//histoStanDev.put(elem, (float) Math.sqrt(histoVariance.get(elem)));
+									
 								} else {
 									// original
 									histoMean.put(elem, it.tags.get(elem)/ sumWeights);
-									//histoVariance.put(elem,(float) (Math.pow(images.get(i).tags.get(elem) - histoMean.get(elem), 2))/ sumWeights);
-									//histoStanDev.put(elem, (float) Math.sqrt(histoVariance.get(elem)));
+									
 								}
 							}
 						}
@@ -303,18 +267,12 @@ public class Node {
 					iterator = images.get(0).getKeys().iterator();
 					while (iterator.hasNext()) {
 						elem = iterator.next(); // The first element is added  and multiply by the first weight, to reset all the elements in the hash
-						//histoMean.put(elem, images.get(0).tags.get(elem) * weights[0] / sumWeights);
+						
 						histoVariance.put(elem,(float) (Math.pow(images.get(0).tags.get(elem)  - histoMean.get(elem), 2))* weights[0]/ sumWeights);
 						histoStanDev.put(elem, (float) Math.sqrt(histoVariance.get(elem)));
-						
-						//add the last value
-						/*histoMean.put(elem, histoMean.get(elem) +  images.get(n-1).tags.get(elem) * weights[0] / n);
-						histoVariance.put(elem,(float) (histoVariance.get(elem) + Math.pow(images.get(0).tags.get(elem) * weights[0] - histoMean.get(elem), 2))/ images.size());
-						histoStanDev.put(elem, (float) Math.sqrt(histoVariance.get(elem)));*/
-						
-						//actualizar
+					
 						}
-					//ImageTags it;
+				
 					for (int i = 1; i < n; i++) {
 						it = images.get(i);
 						iterator = it.getKeys().iterator();
@@ -322,33 +280,30 @@ public class Node {
 							elem = iterator.next();
 							if (histoVariance.get(elem) != null) { // the tag is present in the hash
 								if (i < weights.length) {
-									//histoMean.put(elem, histoMean.get(elem) + (it.tags.get(elem) * weights[i] / sumWeights));
+									
 									histoVariance.put(elem,(float) (histoVariance.get(elem) + Math.pow(images.get(i).tags.get(elem)  - histoMean.get(elem), 2)* weights[i]/ sumWeights));
 									histoStanDev.put(elem, (float) Math.sqrt(histoVariance.get(elem)));
 								} else if (i > images.size() - weights.length) {
-									//histoMean.put(elem,histoMean.get(elem) + (it.tags.get(elem) * weights[(n - 1) - i] / sumWeights));
+									
 									histoVariance.put(elem, (float) (histoVariance.get(elem) + Math.pow(images.get(i).tags.get(elem)  - histoMean.get(elem), 2)* weights[(n - 1) - i]/ sumWeights));
 									histoStanDev.put(elem, (float) Math.sqrt(histoVariance.get(elem)));
 								} else {
-								//	histoMean.put(elem, histoMean.get(elem) + (it.tags.get(elem) / sumWeights));
+					
 									histoVariance.put(elem,	(float) (histoVariance.get(elem) + Math.pow(images.get(i).tags.get(elem)  - histoMean.get(elem), 2)/ sumWeights));
 									histoStanDev.put(elem, (float) Math.sqrt(histoVariance.get(elem)));
 								}
 							} else { // The actual tag don't exits in the hash,so we add
-								// Deberia hacer una comprobacion similar a la
-								// de arriba para que tome en cuenta los
-								// pesos?-------------------------------------------------
+								
 								if (i < weights.length) {
-									//histoMean.put(elem, (it.tags.get(elem) * weights[i] / sumWeights));
+								
 									histoVariance.put(elem,	(float) (Math.pow(images.get(i).tags.get(elem)  - histoMean.get(elem), 2)* weights[i]/ sumWeights));
 									histoStanDev.put(elem, (float) Math.sqrt(histoVariance.get(elem)));
 								} else if (i > images.size() - weights.length) {
-								//	histoMean.put(elem, (it.tags.get(elem) * weights[(n - 1) - i] / sumWeights));
+								
 									histoVariance.put(elem, (float) (Math.pow(images.get(i).tags.get(elem)  - histoMean.get(elem),2) * weights[(n - 1) - i]/ sumWeights));
 									histoStanDev.put(elem, (float) Math.sqrt(histoVariance.get(elem)));
 								} else {
-									// original
-								//	histoMean.put(elem, it.tags.get(elem)/ sumWeights);
+								
 									histoVariance.put(elem,(float) (Math.pow(images.get(i).tags.get(elem) - histoMean.get(elem), 2))/ sumWeights);
 									histoStanDev.put(elem, (float) Math.sqrt(histoVariance.get(elem)));
 								}
@@ -359,7 +314,7 @@ public class Node {
 					for (int i = 0; i < n; i++) {
 						xmedian[i] = images.get(i).xcoord;
 						ymedian[i] = images.get(i).ycoord;
-					}
+					}*/
 				}
 
 				Arrays.sort(xmedian);
@@ -380,30 +335,21 @@ public class Node {
 				representative.xcoord = auxx;
 				representative.ycoord = auxy;
 				
-
+				if(limits != null){
 				representative.xcoord=(limits.A.x+limits.B.x+limits.C.x)/3;
 				representative.ycoord=(limits.A.y+limits.B.y+limits.C.y)/3;
+				}
+				
 				
 			}
 		} // end if of begin processes
-		/*Iterator<Entry<String, Float>> varIter = histoVariance.entrySet().iterator();
-		Entry<String, Float> variance;*/
-		
-		
-		
-		
-		
+				
 		
 		nodeVariance = 0;
-		
-		
 		
 		for (Entry<String, Float> e : histoVariance.entrySet()) {
 			nodeVariance += e.getValue();
 		}
-		
-	
-
 	}
 
 	public double distance(ImageTags t1, ImageTags t2) {
@@ -455,11 +401,7 @@ public class Node {
 		while (iterator.hasNext()) {
 			elem = iterator.next();
 			if (t2.exists(elem)) {
-				//if(histoStanDev.get(elem)== 0)			
-			//	dist += Math.pow(histo.get(elem) - t2.getValue(elem), 2.0);
-			//	else
-					//dist += Math.pow(histo.get(elem) - t2.getValue(elem), 2.0)/histoStanDev.get(elem);
-				    dist += Math.pow(histo.get(elem) - t2.getValue(elem), 2.0)*w.get(elem);
+				 dist += Math.pow(histo.get(elem) - t2.getValue(elem), 2.0)*w.get(elem);
 			}
 		}
 		return (float) Math.sqrt(dist/wSum);
@@ -497,7 +439,7 @@ public class Node {
 				if(histoVariance.get(elem)== 0)			
 				dist += Math.pow(histo.get(elem) - t2.getValue(elem), 2.0);
 				else
-					//dist += Math.pow(histo.get(elem) - t2.getValue(elem), 2.0)/histoStanDev.get(elem);
+					
 				    dist += Math.pow(histo.get(elem) - t2.getValue(elem), 2.0)/  histoVariance.get((elem));
 			}
 		}
@@ -549,19 +491,27 @@ public class Node {
 					auxMap.put(elem, img.getValue(elem) / images.size());
 			}
 		}
-		//int ix =0;
+	
 		iterator = auxMap.keySet().iterator();
 		while (iterator.hasNext()) {
-			//System.out.println(ix++);
+		
 			auxS = iterator.next();
 			histo.add(new HistoOrdered(auxS, auxMap.get(auxS)));  //auxMap -->histoMean
-						//System.out.println(auxS+" --"+ auxMap.get(auxS));
+						
 			
 		}
 		//---------------------------------------------
 		//Ordeno segun los mayores valores
 		
-		Set<Entry<String, Float>> entriesAux = auxMap.entrySet();
+		//LinkedHashMap<String, Float> sortedByValueAux2 = orderHashMap(auxMap, true);
+		
+		ArrayList<String> keys = new ArrayList<String>();
+		ArrayList<Float> values =  new ArrayList<Float>();
+		
+		keys = getTopXNodes(100);
+		values = getTopXNodesValues(100);
+		
+		/*Set<Entry<String, Float>> entriesAux = auxMap.entrySet();
 		Comparator<Entry<String, Float>> valueComparator = new Comparator<Entry<String, Float>>() {
 			@Override
 			public int compare(Entry<String, Float> e1, Entry<String, Float> e2) {
@@ -569,39 +519,36 @@ public class Node {
 				Float v2 = e2.getValue();
 				return v2.compareTo(v1);
 			}
-		};
+		};*/
 
-		// Sort method needs a List, so let's first convert Set to List in Java
+		/*// Sort method needs a List, so let's first convert Set to List in Java
 		List<Entry<String, Float>> listOfEntriesAux = new ArrayList<Entry<String, Float>>(entriesAux);
 
 		// sorting HashMap by values using comparator
-		Collections.sort(listOfEntriesAux, valueComparator);
+		Collections.sort(listOfEntriesAux, valueComparator);*/
 
-		LinkedHashMap<String, Float> sortedByValueAux = new LinkedHashMap<String, Float>(listOfEntriesAux.size());
+		LinkedHashMap<String, Float> sortedByValueAux = new LinkedHashMap<String, Float> (); //(listOfEntriesAux.size());
 
 		
 		
-		int h =0; //Solo los 100 mayores
+		/*int h =0; //Solo los 100 mayores
 		// copying entries from List to Map
 		for (Entry<String, Float> entryAux : listOfEntriesAux) {
 			if(++h== 100)
 				break;
 			sortedByValueAux.put(entryAux.getKey(), entryAux.getValue());
-		}
-				
-//--------------------------------------------------------------
-		/*Collections.sort(histo); // ----------------
-		for (int i = 0; i < 100; i++) {
-			if (histo.size() - 1 <= i)
-				break;
-			histof.add(new Histogram(histo.get(i).name, histo.get(i).value));
+		}*/
 			
-		}
-		Collections.sort(histof);*/
+		for(int i = 0; i< keys.size(); i++)
+			sortedByValueAux.put(keys.get(i), values.get(i));
+		
+//--------------------------------------------------------------
+
 		text = "<html>\n";
 		
-		//-------Ordenos los Tags-----------------------------
-				
+		//-------Ordenos los Tags-----  Este Ordenamiento se hace aqui ya que la funcion de ordenacion que definí en esta clase compara float y no strings------------------------
+		
+							
 		Set<Entry<String, Float>> entriesAuxString = sortedByValueAux.entrySet();
 		Comparator<Entry<String, Float>> valueComparatorString = new Comparator<Entry<String, Float>>() {
 			@Override
@@ -625,6 +572,10 @@ public class Node {
 			sortedByValueAuxString.put(entryAuxString.getKey(), entryAuxString.getValue());
 		}
 		
+		//sortedByValueAuxString = orderHashMap(sortedByValueAux, true);
+		
+		
+		//------------------------------------------------------------------------------
 		//for (Histogram h : histof) {
 					
 		for(Entry<String, Float> e : sortedByValueAuxString.entrySet()){
@@ -828,7 +779,6 @@ public class Node {
 		return mean10;
 		}
 	
-	
 	private float getTagPresence(ArrayList<String> pattern, ArrayList<String> surface ){
 		int found = 0;
 		
@@ -939,15 +889,12 @@ public class Node {
 	public BufferedImage getTagCloudImage() {
 		// TODO Auto-generated method stub
 		
-		//Evaluar si usar el HistoMean Ponderado o usar un HistoMean sin las ponderaciones de CutNodes
-		//order the histoMean
-		
-		
+	
 		String elem;
 		Iterator<String> iterator;
 		HashMap<String, Float> auxMap = new HashMap<String, Float>();
 	
-		//ArrayList<Histogram> histof = new ArrayList<Histogram>();
+		
 
 		// ESTO DEBERIA CALCULARSE CON EL HISTOGRAMA MEDIO
 		// Se Calcula la media de los tags sin los pesos    //Revisar
@@ -967,17 +914,15 @@ public class Node {
 				ArrayList<String> mean100 = new ArrayList<String>();
 				ArrayList<Float>  mean100fl =new ArrayList<Float>();
 				LinkedHashMap<String, Float> sortedByValue = orderHashMap(auxMap, true);
-				//LinkedHashMap<String, Float> sortedByValue = orderHashMap(histoMean, true);  //ponderado
-				//HashMap<String, Float> tags = new HashMap<String, Float>();
+				
 				HashMap<String, Float> tagForCloud = new HashMap<String, Float>();
 							
-			//	int h = 0;
-				
+
 				
 				
 				double x = 0.00000025;
 				for(Entry<String, Float> e : sortedByValue.entrySet()){
-					///tags.put(e.getKey(), e.getValue());
+				
 				
 					
 					if(e.getValue()>x){
@@ -985,9 +930,7 @@ public class Node {
 					mean100fl.add(e.getValue());}
 					else
 						break;
-					
-					/*if(++h ==100) 
-						break;*/
+				
 					
 					
 					}
@@ -1000,22 +943,10 @@ public class Node {
 			
 				for (int i = 0; i < mean100.size(); i++) {
 					tagForCloud.put(mean100.get(i), ((mean100fl.get(i)-min)/(max-min))*100000000);
-					//System.out.printf("Value = %.8f\t Key= %s \t\t\tNorm= %.3f\n",mean100fl.get(i),mean100.get(i), ((mean100fl.get(i)-min)/(max-min))*100000000);
+					
 				}
 				
-				/*
-				for (int i = 0; i < mean100.size(); i++) {
-					tagForCloud.put(mean100.get(i),((mean100fl.get(i)-min)/(max-min))*100);
-					System.out.printf("Key = %s \t\t\tOriginal= %.8f\t\t\tValue= %.2f\n", mean100.get(i),mean100fl.get(i),tagForCloud.get(mean100.get(i)));
-				}*/
-				
-				/*System.out.println("--------------------------------------------------------\n");
-				
-				for(Entry<String, Float> e : tags.entrySet()){
-					tagForCloud.put(e.getKey(), ((e.getValue()-min)/(max-min))*100000000);
-					System.out.printf("Key = %s \t\t\tOriginal= %.8f\t\t\tValue= %.2f\n", e.getKey(),e.getValue(),tagForCloud.get(e.getKey()));
-				}
-				*/
+			
 				List<WordFrequency> wordFrequencies=new  ArrayList<WordFrequency>();
 				   
 				for(Entry<String, Float> e : tagForCloud.entrySet()){
@@ -1027,12 +958,6 @@ public class Node {
 				wordCloud.setPadding(5);
 				wordCloud.setBackground(new CircleBackground(140));
 				wordCloud.setBackgroundColor(Color.white);
-				//wordCloud.setBackground(new RectangleBackground(600,600));
-				//wordCloud.setBackground(new PixelBoundryBackground(getInputStream("backgrounds/whale_small.png")));
-				//RectangleBackground
-				
-				//(new LinearGradientColorPalette(Color.RED, 30, Color.BLUE, 30 , Color.GREEN)
-				//new ColorPalette(new Color(0x4055F1), new Color(0x408DF1), new Color(0x40AAF1), new Color(0x40C5F1), new Color(0x40D3F1), new Color(0xFFFFFF))
 				wordCloud.setColorPalette(new ColorPalette(new Color(0x4055F1),new Color(0x00CC00), new Color(0x408DF1), new Color(0x40AAF1), new Color(0x40C5F1), new Color(0x40D3F1), new Color(0xFF3333),new Color(0xFFF00)));
 				wordCloud.setFontScalar(new SqrtFontScalar(8, 40));
 				wordCloud.build(wordFrequencies);
@@ -1044,9 +969,7 @@ public class Node {
 		
 		return img;
 	}
-	
-	
-	
+			
 	public String getNodesContentRows(){
 		ImageTags imagesAux2;
 		imagesAux2 = images.get(0);
@@ -1098,7 +1021,6 @@ public class Node {
 	
 		return nodeInfo;
 	}
-	
 	
 	public String getNodeMeanData(){
 		
@@ -1152,11 +1074,9 @@ public class Node {
 		acum--;
 		A = acum/(categoriesCant-1);
 		
-		//A = (acum)/(float)images.size();
-		
+	
 		}
 		
-		//A = ((float)categoriesCant)/images.size();
 		return A;
 	}
 	
@@ -1210,94 +1130,16 @@ public class Node {
 		D =  (float) Math.sqrt(Math.pow(xDev, 2)+ Math.pow(yDev, 2));
 		
 		
-		/*//Variancia de la media de la distancia de cada imagen al nodo
-		float acumDist2=0;
-		float distMean=0;
-		for (int i = 0; i < images.size(); ++i) {
-			imagesAux2 = images.get(i);
-			acumDist2 += Math.sqrt(Math.pow((this.representative.xcoord-imagesAux2.xcoord),2) +Math.pow((this.representative.ycoord-imagesAux2.ycoord),2));
-		}
-		distMean = acumDist2 /images.size();
-		
-		acumDist2 =0;
-		for (int i = 0; i < images.size(); ++i) {
-			imagesAux2 = images.get(i);
-			acumDist2 += Math.pow(Math.sqrt(Math.pow((this.representative.xcoord-imagesAux2.xcoord),2) +Math.pow((this.representative.ycoord-imagesAux2.ycoord),2))-distMean,2)/images.size();
-		}
-		
-		D= (float) Math.sqrt(acumDist2);	*/	
-		
+			
 		return D;
 	}
 	
 	public Boolean isInside(double x, double y){
-		double aux =0;
-		
-		boolean originalTrian = false;
-		boolean betaTri1 = false, betaTri2 = false, betaTri3 =false;
-			
-		//X1 X2 X3
-		aux = ((limits.getX1()-limits.getX3())*(limits.getY2()-limits.getY3())) 
-				- ((limits.getY1()-limits.getY3())*(limits.getX2()-limits.getX3()));
-		
-		if(aux >= 0)
-			originalTrian = true;
-		else 
-			originalTrian = false;
-		
-		//X1 X2 P
-		aux = ((limits.getX1()-x)*(limits.getY2()-y)) 
-				- ((limits.getY1()-y)*(limits.getX2()-x));
-		
-		if(aux >= 0)
-			betaTri1 = true;
-		else 
-			betaTri1 = false;
-		
-		
-		
-		//X1 P X3
-		aux = ((limits.getX1()-limits.getX3())*(y-limits.getY3())) 
-				- ((limits.getY1()-limits.getY3())*(x-limits.getX3()));
-		
-		
-		if(aux >= 0)
-			betaTri2 = true;
-		else 
-			betaTri2 = false;
-		
-		//P X2 X3
-		aux = ((x-limits.getX3())*(limits.getY2()-limits.getY3())) 
-				- ((y-limits.getY3())*(limits.getX2()-limits.getX3()));
-		
-		if(aux >= 0)
-			betaTri3 = true;
-		else 
-			betaTri3 = false;
-		
-		
-		
-		if ((originalTrian && betaTri1 && betaTri2 && betaTri2 ) || (!originalTrian && !betaTri1 && !betaTri2 && !betaTri3 ) )
-		  	   return true;
-		       else 
-		      	return false;
-				
-		
-		/* if (x<=limits.getX1() &&
-		   x>=limits.getX2() &&
-		   x>=limits.getX3() &&
-		   //x<=limits.getX4() &&
-		   
-		   y<=limits.getY1() &&
-		   y<=limits.getY2() &&
-		   y>=limits.getY3() //&&
-		   //y>=limits.getY4() 
-		   )*/
-  
-		
+
+	
+		return false;
 	}
 	
-		
 	public String printNodeMet(int n, ArrayList<Edge> edges){
 		String text="";
 		

@@ -388,7 +388,7 @@ public class BuildMap {
 		map = new Map();
 		map.setWeights(cutNode);
 		//double minDist, dist;
-		int cont=0;
+		//int cont=0;
 		Node  auxNode2;
 		@SuppressWarnings("unused")
 		boolean foundNode, foundEdge;
@@ -404,7 +404,7 @@ public class BuildMap {
 		currentNode = map.getNodeByName(hx.format(zoneCoords[0][6]));
 				
 		for (int i=1; i<sequenceLength; i++) {
-			cont++;
+			//cont++;
 			//if ((cont%1000)==0) System.out.println("Processing img="+i);
 			// Find the closest node
 			
@@ -436,7 +436,7 @@ public class BuildMap {
 					" YCoord " +h.representative.ycoord+
 					" Images " +h.getSize());*/
 				
-				System.out.println("Sin Imagenes en el nodo");
+				//System.out.println("Sin Imagenes en el nodo");
 				errase.add(t);
 				xNodes.add(h);
 			}
@@ -446,22 +446,19 @@ public class BuildMap {
 		
 		
 		
-		for (Integer integer : errase) {
+	/*	for (Integer integer : errase) {
 			System.out.println("nodos vacios " + integer);
-		}
+		}*/
 		
-		System.out.println("Tamano de nodos " + map.nodes.size());
+		System.out.println("Node Amaount " + map.nodes.size());
 		
 		if(!errase.isEmpty()){
 			map.nodes.removeAll(xNodes);
-			System.out.println("Se eliminarion  " + errase.size());}
-
+			System.out.println("Deleted Nodes  " + errase.size());}
 		
-		
-		System.out.println("\n\nTamano de nodos " + map.nodes.size());
+		System.out.println("\n\nNode Amaount " + map.nodes.size());
 			
-		/*	for (int i : errase)
-				map.nodes.remove(i);*/
+	
 		
 	}
 	//-----------------------------------------------------------------------------------------
@@ -480,35 +477,23 @@ public class BuildMap {
 			double aux =0;
 			
 			//X1 X2 X3
-		/*	aux = ((v.getX1()-v.getX3())*(v.getY2()-v.getY3())) 
-					- ((v.getY1()-v.getY3())*(v.getX2()-v.getX3()));*/
-			
 			aux = crossProduct(v.A, v.B, v.C);
-			
-			
+						
 			if(aux >= 0)
 				originalTrian = true;
 			else 
 				originalTrian = false;
 			
 			//X1 X2 P
-			/*aux = ((v.getX1()-x)*(v.getY2()-y)) 
-					- ((v.getY1()-y)*(v.getX2()-x));*/
-					
 			aux = crossProduct(v.A, v.B, new java.awt.Point((int)x, (int)y));
-			
-			
+						
 			if(aux >= 0)
 				betaTri1 = true;
 			else 
 				betaTri1 = false;
-			
-			
+						
 			
 			//X1 P X3
-			/*aux = ((v.getX1()-v.getX3())*(y-v.getY3())) 
-					- ((v.getY1()-v.getY3())*(x-v.getX3()));*/
-			
 			aux = crossProduct(v.A, new java.awt.Point((int)x, (int)y), v.C);
 			
 			if(aux >= 0)
@@ -517,9 +502,6 @@ public class BuildMap {
 				betaTri2 = false;
 			
 			//P X2 X3
-			/*aux = ((x-v.getX3())*(v.getY2()-v.getY3())) 
-					- ((y-v.getY3())*(v.getX2()-v.getX3()));*/
-			
 			aux = crossProduct(new java.awt.Point((int)x, (int)y),v.B,v.C);
 			
 			if(aux >= 0)
@@ -527,15 +509,13 @@ public class BuildMap {
 			else 
 				betaTri3 = false;
 			
-			//(originalTrian && betaTri1 && betaTri2 && betaTri2 ) || (!originalTrian && !betaTri1 && !betaTri2 && !betaTri3 )
-			
+					
 			if (betaTri1 == betaTri2 && betaTri2 == betaTri3 && betaTri3 == originalTrian){
 				zone = hx.format(coord[6]);
 				break;
 			}
 			
 		}
-	
 		
 		return zone;
 	}

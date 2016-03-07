@@ -1,6 +1,7 @@
 package buildMap;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,14 +37,14 @@ public class Zone {
 			auxFortagsValue.addAll(no.getTopXNodesValues(3));
 		}
 		
-		
+				
 		ConcurrentHashMap<String, Float> probTopTags = new ConcurrentHashMap<String, Float>();
 		for (int i = 0; i < auxFortags.size(); i++) {
 						
 				if(probTopTags.containsKey(auxFortags.get(i)))
-					probTopTags.replace(auxFortags.get(i), probTopTags.get(auxFortags.get(i))+ auxFortagsValue.get(i));
+					probTopTags.replace(auxFortags.get(i), probTopTags.get(auxFortags.get(i))+ auxFortagsValue.get(i)/Collections.frequency(auxFortags,auxFortags.get(i)));
 					else
-				     probTopTags.put(auxFortags.get(i), auxFortagsValue.get(i));
+				     probTopTags.put(auxFortags.get(i), auxFortagsValue.get(i)/Collections.frequency(auxFortags,auxFortags.get(i)));
 				
 				
 		}

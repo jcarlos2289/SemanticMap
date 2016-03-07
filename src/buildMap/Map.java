@@ -675,7 +675,7 @@ public class Map {
 		Cluster cluster = alg.performClustering(distanceMatrix, names, new CompleteLinkageStrategy());  //SingleLinkageStrategy() CompleteLinkageStrategy()
 				
 		//cluster.toConsole(1);
-		System.out.println(printCluster(cluster));
+		//System.out.println(printCluster(cluster));
 		return cluster;
 	}
 	
@@ -870,11 +870,6 @@ public class Map {
 		}
 		
 		
-		
-		
-		
-		
-		
 				
 			zones.clear();
 			Zone auxZone = new Zone("AUX");
@@ -961,11 +956,14 @@ public class Map {
 			//
 			
 			
+			ArrayList<String> zNames = new ArrayList<String>();
+			for(int i = 0; i< zones.size();i++){
+				String ram =  zones.get(i).name;
+				zNames.add(ram);
+				zones.get(i).name = ram+"_"+String.valueOf(Collections.frequency(zNames, ram));
+			}
 			
-			
-			
-			
-			
+				
 			
 			
 			
@@ -1098,12 +1096,10 @@ public class Map {
 			if(val.length<6)
 				System.out.println("Requeried 6 values in the array");
 			else
-				A.setLocation( val[0], val[1]);
-		    	B.setLocation( val[2], val[3]);
-		    	C.setLocation( val[4], val[5]);
-				
-				
-				
+				A.setLocation(val[0], val[1]);
+		    	B.setLocation(val[2], val[3]);
+		    	C.setLocation(val[4], val[5]);
+							
 				for (int i = 0; i < 6; i++) {
 					values[i] = val[i];
 				}
