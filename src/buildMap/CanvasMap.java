@@ -14,11 +14,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferInt;
-import java.awt.image.PixelGrabber;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -50,7 +45,6 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;*/
 import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.events.IndexEvents.Entry;
 
 
 
@@ -254,7 +248,7 @@ public class CanvasMap extends JPanel implements MouseListener {
 					
 					
 					
-						int o = 0;			
+					//	int o = 0;			
 					for(Zone zn : gui.bm.map.zones){
 						// g.setColor(new Color(colors[o][0],colors[o][1],colors[o][2]));					
 								 
@@ -269,7 +263,7 @@ public class CanvasMap extends JPanel implements MouseListener {
 							//g.drawRect((int)nd.limits.getX3(), (int) nd.limits.getY3(), w, h);
 							//g.fillRect((int)nd.limits.getX3(), (int) nd.limits.getY3(), w, h);
 						}
-					o++;
+					//o++;
 					
 					}
 					
@@ -295,7 +289,7 @@ public class CanvasMap extends JPanel implements MouseListener {
 					
 					g2d.drawLine(xAnt+radius/2, yAnt+radius/2, x+radius/2, y+radius/2);
 				}
-				int number = 1;
+			//	int number = 1;
 				for (Node n:gui.bm.map.nodes) {
 					
 					if(n.getSize()!=0){
@@ -317,7 +311,7 @@ public class CanvasMap extends JPanel implements MouseListener {
 			        Font oldFont=new Font("Monospaced", Font.PLAIN, 8);
 			        g.setFont(oldFont);
 			        g.drawString(n.nodeName, x+3, y+10);
-			        number++;
+			      //  number++;
 			        
 			        g.drawPolygon(n.limits.getXArray(), n.limits.getYArray(), 3);
 					//g.fillPolygon(nd.limits.getXArray(), nd.limits.getYArray(), 3);

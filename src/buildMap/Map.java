@@ -2,20 +2,10 @@ package buildMap;
 
 import java.awt.Color;
 import java.awt.Point;
-import java.awt.event.ActionListener;
-import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Array;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -23,23 +13,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.apporiented.algorithm.clustering.AverageLinkageStrategy;
 import com.apporiented.algorithm.clustering.Cluster;
 import com.apporiented.algorithm.clustering.ClusteringAlgorithm;
 import com.apporiented.algorithm.clustering.CompleteLinkageStrategy;
 import com.apporiented.algorithm.clustering.DefaultClusteringAlgorithm;
-import com.apporiented.algorithm.clustering.PDistClusteringAlgorithm;
-import com.apporiented.algorithm.clustering.SingleLinkageStrategy;
 import com.apporiented.algorithm.clustering.visualization.DendrogramPanel;
 
 import java.util.Map.Entry;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 
@@ -198,24 +179,18 @@ public class Map {
 		float E=0;
 		
 		
-		float xAcum=0, yAcum=0, xMean, yMean, xDev, yDev;
+		float xAcum=0, yAcum=0, xDev, yDev;
 		for (Node node : nodes) {
 			
 			xAcum+=node.representative.xcoord;
 			yAcum+=node.representative.ycoord;
-			
 		}
 			
-		xMean = xAcum/nodes.size();
-		yMean = yAcum/nodes.size();
-		
+	
 		xAcum =0;
 		yAcum = 0;
 		
 		for(Node node:nodes){
-		//	xAcum +=Math.pow(node.representative.xcoord-xMean, 2)/nodes.size();
-			//yAcum  +=Math.pow(node.representative.ycoord-yMean, 2)/nodes.size();
-			
 			xAcum +=node.representative.xcoord/nodes.size();
 			yAcum  +=node.representative.ycoord/nodes.size();
 		}
@@ -279,26 +254,6 @@ public class Map {
 				
 		return dat;
 	}
-	/*
-	public ArrayList<NodeCoef> DetailNomrCoeficientsByNode(ArrayList<NodeCoef> NodeMetricCoeficients, float dmax){
-		ArrayList<NodeCoef> NodeMetricCoeficientsNorm = new ArrayList<NodeCoef>();
-		
-				
-		float acumA = 0, acumB =0, acumD=0;
-		NodeCoef normValue;
-		for (NodeCoef nodeCoef : NodeMetricCoeficients) {
-			normValue = normalize(nodeCoef, dmax);
-			acumA = normValue.getA();
-			acumB = normValue.getB();
-			acumD = normValue.getD();
-			NodeMetricCoeficientsNorm.add(new NodeCoef(acumA, acumB, acumD));
-			
-		}
-		
-		return  NodeMetricCoeficientsNorm;
-		
-	}
-	*/
 	
 	
 	public String printMetricTable(float dmax){
@@ -406,7 +361,6 @@ public class Map {
 				
 				
 				int h = 0;
-				
 				for (Iterator<Node> iterator = nodes.iterator(); iterator.hasNext();) {
 					
 					Node node =  iterator.next();
@@ -428,9 +382,7 @@ public class Map {
 				}
 				
 				Collections.sort(classCount);
-				
 				String catPercentage="<h2>Categories Count Percentage</h2><br><p>Cat_Amout &nbsp;&nbsp; %</p><br>";
-				
 				Set<Integer> data = new HashSet<>(classCount);
 		    
 				for(int dat: data){
@@ -442,7 +394,6 @@ public class Map {
 						
 				text += "</table>";
 				text +="\n\n\n<br> <p>" +catPercentage+"</p><br>";
-										
 				text +="\n\n\n<br> <p>" +cats+"</p>";
 				text += "\n</html>";
 		
@@ -451,26 +402,17 @@ public class Map {
 		
 	}
 	public String getNodeTagsRelation (String name, String modelPath){
-		
-		//node.images.get(0).imageName;
 		// Incluir el Nombre de los Modelos que uso en  los tituos de las tablas
 		
 		String [] ram = modelPath.split("/");
-		
-	
-    	String text = "<html>\n";
+		String text = "<html>\n";
 		text +="<h1> Sequence: "+ name+"</h1><br>";
 		text +="<h1> Relation with Sequence: "+ ram[ram.length-1]+"</h1><br>";
-		
-		
 		text += "<p> Nodes: "+this.getMapSize()+"</p><br>";
-					
 		text += "<table border=\"1\"   style=\"font-size:8px\"    >";
-			
-		
 		text += "<tr><th> </th> <th colspan=\"3\">Top 3 Places Model </th><th>æææææ</th> <th colspan=\"5\">Top 5 ImageNet Model</th> </tr> "	;
-		
 		text += "<tr><th>Node</th>";
+		
 		for(int i = 0;i < 3; ++i )
 			text+="<th>Tag "+ String.valueOf(i+1)+ "</th>";
 		text+="<th>æææææ</th>";
@@ -482,7 +424,7 @@ public class Map {
 		int h = 0;
 		//String modelo2Path = "/home/jcarlos2289/Documentos/VidriloTags/Sequence1/Vidrilo_Sequence1_ImageNetAlexNet/";
 		 String modelo2Path = modelPath;
-		int topModelo2 = 5, topModelo1 = 3;
+		int topModelo2 = 5;
 		ArrayList<Node> virtualMap = new ArrayList<Node>();
 		
 		for (Iterator<Node> iterator = nodes.iterator(); iterator.hasNext();) {
@@ -537,9 +479,7 @@ public class Map {
 			      	topsTags.addAll(ListMethods.getTopXNodes(topModelo2, imgData.tags));
 			      	
 			        }
-				 			
-		
-			}
+				}
 			
 			top5Modelo2 = AuxNode.getTopXNodes(5);
 			virtualMap.add(AuxNode);
@@ -581,14 +521,7 @@ public class Map {
 			text+="<th>Tag "+ String.valueOf(i+1)+ "</th>";
 		
 		text +="</tr>\n";
-		
-		
-		int h = 0;
-		//String modelo2Path = "/home/jcarlos2289/Documentos/VidriloTags/Sequence1/Vidrilo_Sequence1_ImageNetAlexNet/";
-		
-	//	int topModelo2 = 5, topModelo1 = 3;
-	//	ArrayList<Node> virtualMap = new ArrayList<Node>();
-		
+			
 		for (Iterator<Node> iterator = nodes.iterator(); iterator.hasNext();) {
 			
 			Node node =  iterator.next();
@@ -898,7 +831,7 @@ public class Map {
 			Zone currentZone = createZone(nodes.get(0));
 			double minDist = Double.MAX_VALUE; 
 			double dist = 0;
-			boolean foundZone = false;
+			//boolean foundZone = false;
 			
 			
 			for(int i = 1; i< nodes.size(); i++){
@@ -921,7 +854,7 @@ public class Map {
 				}else
 				{
 					if(minDist<dist && minDist < 0.09){ //th1
-						foundZone = true;
+						//foundZone = true;
 						currentZone= auxZone2;
 						currentZone.addNode(nodes.get(i));
 					}else{
@@ -932,23 +865,6 @@ public class Map {
 			}	
 				
 				
-	/*			if(dist<0.05){
-					currentZone.addNode(nodes.get(i));
-				}else{
-					if (!zones.isEmpty())
-						for(int j = 0; j < zones.size();j++){
-							if(zones.get(j)!= currentZone){
-								dist = distanceOfNodes_KS(nodes.get(i), zones.get(j).representative);
-								if(dist<0.05){
-									currentZone.addNode(nodes.get(i));
-								}else{
-									zones.add(currentZone); //Esto no va asi, cambiar fijarme en el de nodos e imagenes
-								}
-							}
-						}
-				
-			}
-		//	}*/
 			
 			//Si no es similar se pasara a otra zona
 			// pero se debe buscar siempre si dentro 
@@ -963,15 +879,10 @@ public class Map {
 				zones.get(i).name = ram+"_"+String.valueOf(Collections.frequency(zNames, ram));
 			}
 			
-				
-			
-			
-			
 			
 			String text = "<html>\n";
 			text +="<h1> Identified zones in the map</h1><br>";
-			
-			
+						
 			text += "<table border=\"1\"   style=\"font-size:12px\"    >";
 			text +="<tr><th>Zone</th><th>Category</th><th>#Nodes</th><th>Nodes</th></tr>\n";
 			int p = 1;
@@ -989,26 +900,8 @@ public class Map {
 				p++;
 			}
 				
-			
-			
 			text += "</table>";
 			text += "\n</html>\n\n";
-			
-			
-			
-			
-			/*
-			
-			for(Node n : nodes){
-				//if(u%2==0)
-					auxZone= new Zone(n.nodeName);
-				
-				auxZone.addNode(n);
-				u++;
-				zones.add(auxZone);
-				
-					
-			}*/
 			
 			return text;
 			
@@ -1075,23 +968,16 @@ public class Map {
 			
 			distance = (float) Math.sqrt(Math.pow((a.representative.xcoord-b.representative.xcoord),2) +Math.pow((a.representative.ycoord- b.representative.ycoord),2));
 			return distance;
-			
-		}
-		
+			}
 	}
 	
 	class AreaCoords{
 		double[] values = new double[6];
-		
-		
+				
 		java.awt.Point A = new Point();
 		java.awt.Point B = new Point();
 		java.awt.Point C = new Point();
-		
-		
-		//Point2D T = new Point2D();
-		
-		
+				
 		public AreaCoords(double[] val){
 			if(val.length<6)
 				System.out.println("Requeried 6 values in the array");
@@ -1104,9 +990,7 @@ public class Map {
 					values[i] = val[i];
 				}
 		}
-		
-		
-				
+						
 		public double getX1(){
 			return values[0];
 		}

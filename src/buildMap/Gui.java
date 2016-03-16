@@ -1175,6 +1175,23 @@ public class Gui extends JFrame implements ActionListener {
                 return;
             }
             
+            
+            //----------------------------------Sequence 2
+            
+            if(e.getSource() == jMIPlaAlex_Sq2){
+            	bm.readTags("/home/jcarlos2289/Documentos/VidriloTags/Sequence2/Vidrilo_Sequence2_PlacesAlexNet/sequence2visual", -0.00000001, 2389, "/home/jcarlos2289/Documentos/VidriloTags/Sequence2/Sequence2.txt",205, 10, 2000000000,"TrianglesPoints.txt");
+	  			name= "VidriloSeq2_PlacesAlexNet";
+	  			setTitle(name);      
+            	cm.repaint();
+            	statusLabel.setText("Sequence : "+name+" selected.");
+            	seqNumber=2;
+            	jmiGenMap.setEnabled(true);
+                return;
+            }
+            
+            
+            
+            
             ///Para generacion de relacion entre modelos 
             if(e.getSource() == jMIImgAlex_Sq6){
             	//bm.readTags("/home/jcarlos2289/Documentos/VidriloTags/Sequence1/Vidrilo_Sequence1_ImageNetAlexNet/sequence1visual", -0.00000001, 2389, "/home/jcarlos2289/Documentos/VidriloTags/Sequence1/Sequence1.txt",1000, 10, 2000000000);

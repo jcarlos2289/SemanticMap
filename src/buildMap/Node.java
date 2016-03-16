@@ -58,8 +58,6 @@ public class Node {
 		}
 		weights= new float[1];
 		for (int i=0; i< 1; i++) {
-			//weights[i]=(i/(float) size);
-			//System.err.println(weights[i]);
 			weights[i]=1;
 		}
 		
@@ -477,9 +475,7 @@ public class Node {
 		Iterator<String> iterator;
 		HashMap<String, Float> auxMap = new HashMap<String, Float>();
 		ArrayList<HistoOrdered> histo = new ArrayList<HistoOrdered>();
-		//ArrayList<Histogram> histof = new ArrayList<Histogram>();
-
-		// ESTO DEBERIA CALCULARSE CON EL HISTOGRAMA MEDIO
+	
 		// Se Calcula la media de los tags sin los pesos    //Revisar
 		for (ImageTags img : images) {
 			iterator = img.getKeys().iterator();
@@ -496,48 +492,18 @@ public class Node {
 		while (iterator.hasNext()) {
 		
 			auxS = iterator.next();
-			histo.add(new HistoOrdered(auxS, auxMap.get(auxS)));  //auxMap -->histoMean
-						
+			histo.add(new HistoOrdered(auxS, auxMap.get(auxS)));  
 			
 		}
 		//---------------------------------------------
 		//Ordeno segun los mayores valores
-		
-		//LinkedHashMap<String, Float> sortedByValueAux2 = orderHashMap(auxMap, true);
 		
 		ArrayList<String> keys = new ArrayList<String>();
 		ArrayList<Float> values =  new ArrayList<Float>();
 		
 		keys = getTopXNodes(100);
 		values = getTopXNodesValues(100);
-		
-		/*Set<Entry<String, Float>> entriesAux = auxMap.entrySet();
-		Comparator<Entry<String, Float>> valueComparator = new Comparator<Entry<String, Float>>() {
-			@Override
-			public int compare(Entry<String, Float> e1, Entry<String, Float> e2) {
-				Float v1 = e1.getValue();
-				Float v2 = e2.getValue();
-				return v2.compareTo(v1);
-			}
-		};*/
-
-		/*// Sort method needs a List, so let's first convert Set to List in Java
-		List<Entry<String, Float>> listOfEntriesAux = new ArrayList<Entry<String, Float>>(entriesAux);
-
-		// sorting HashMap by values using comparator
-		Collections.sort(listOfEntriesAux, valueComparator);*/
-
-		LinkedHashMap<String, Float> sortedByValueAux = new LinkedHashMap<String, Float> (); //(listOfEntriesAux.size());
-
-		
-		
-		/*int h =0; //Solo los 100 mayores
-		// copying entries from List to Map
-		for (Entry<String, Float> entryAux : listOfEntriesAux) {
-			if(++h== 100)
-				break;
-			sortedByValueAux.put(entryAux.getKey(), entryAux.getValue());
-		}*/
+		LinkedHashMap<String, Float> sortedByValueAux = new LinkedHashMap<String, Float> (); 
 			
 		for(int i = 0; i< keys.size(); i++)
 			sortedByValueAux.put(keys.get(i), values.get(i));
@@ -571,8 +537,6 @@ public class Node {
 		for (Entry<String, Float> entryAuxString : listOfEntriesAuxString) {
 			sortedByValueAuxString.put(entryAuxString.getKey(), entryAuxString.getValue());
 		}
-		
-		//sortedByValueAuxString = orderHashMap(sortedByValueAux, true);
 		
 		
 		//------------------------------------------------------------------------------
@@ -622,10 +586,7 @@ public class Node {
 				datAux.put(imagesAux.category, h+1);
 			}else
 				datAux.put(imagesAux.category, 1);
-						
 			}
-		
-		
 		return datAux.size();
 	}
 		
@@ -736,8 +697,6 @@ public class Node {
 		ArrayList<String> mean10 = new ArrayList<String>();
 		LinkedHashMap<String, Float> sortedByValue = orderHashMap(histoMean, true);
 	
-		//thre=0;
-		//int h = 0;
 		for(Entry<String, Float> e : sortedByValue.entrySet()){
 			if(e.getValue()>thre)
 				mean10.add(e.getKey());
@@ -752,8 +711,6 @@ public class Node {
 		ArrayList<Float> mean10 = new ArrayList<Float>();
 		LinkedHashMap<String, Float> sortedByValue = orderHashMap(histoMean, true);
 	
-		//thre=0;
-		//int h = 0;
 		for(Entry<String, Float> e : sortedByValue.entrySet()){
 			if(e.getValue()>thre){
 				mean10.add(e.getValue());
@@ -838,7 +795,6 @@ public class Node {
 		}
 
 		// imprimir desviacion standard y varianza
-
 		Set<Entry<String, Float>> entries = histoStanDev.entrySet();
 		Comparator<Entry<String, Float>> valueComparator = new Comparator<Entry<String, Float>>() {
 			@Override
@@ -894,8 +850,6 @@ public class Node {
 		Iterator<String> iterator;
 		HashMap<String, Float> auxMap = new HashMap<String, Float>();
 	
-		
-
 		// ESTO DEBERIA CALCULARSE CON EL HISTOGRAMA MEDIO
 		// Se Calcula la media de los tags sin los pesos    //Revisar
 		for (ImageTags img : images) {
@@ -908,44 +862,30 @@ public class Node {
 					auxMap.put(elem, img.getValue(elem) / images.size());
 			}
 		}
-			
-		
-		
 				ArrayList<String> mean100 = new ArrayList<String>();
 				ArrayList<Float>  mean100fl =new ArrayList<Float>();
 				LinkedHashMap<String, Float> sortedByValue = orderHashMap(auxMap, true);
 				
 				HashMap<String, Float> tagForCloud = new HashMap<String, Float>();
-							
-
-				
 				
 				double x = 0.00000025;
 				for(Entry<String, Float> e : sortedByValue.entrySet()){
 				
-				
-					
 					if(e.getValue()>x){
 					mean100.add(e.getKey());
 					mean100fl.add(e.getValue());}
 					else
 						break;
-				
-					
-					
 					}
 				
 				
 				float max , min;
 				max = (mean100fl.get(0));
 				min = (mean100fl.get(mean100fl.size()-1));
-				
-			
+							
 				for (int i = 0; i < mean100.size(); i++) {
 					tagForCloud.put(mean100.get(i), ((mean100fl.get(i)-min)/(max-min))*100000000);
-					
 				}
-				
 			
 				List<WordFrequency> wordFrequencies=new  ArrayList<WordFrequency>();
 				   
@@ -962,10 +902,8 @@ public class Node {
 				wordCloud.setFontScalar(new SqrtFontScalar(8, 40));
 				wordCloud.build(wordFrequencies);
 				
-				
 				BufferedImage img = wordCloud.getBufferedImage();
 				//wordCloud.writeToFile("resultados/datarank_wordcloud_circle_sqrt_font300.png");
-		
 		
 		return img;
 	}
@@ -1073,8 +1011,6 @@ public class Node {
 		}
 		acum--;
 		A = acum/(categoriesCant-1);
-		
-	
 		}
 		
 		return A;
@@ -1128,9 +1064,7 @@ public class Node {
 		xDev= (float) Math.sqrt(xAcum);
 		yDev= (float) Math.sqrt(yAcum);
 		D =  (float) Math.sqrt(Math.pow(xDev, 2)+ Math.pow(yDev, 2));
-		
-		
-			
+					
 		return D;
 	}
 	
@@ -1179,8 +1113,6 @@ public class Node {
 			return name.compareToIgnoreCase(h.name);
 		}
 	}
-
-
 
 
 }
